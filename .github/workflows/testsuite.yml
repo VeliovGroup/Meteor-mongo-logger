@@ -19,12 +19,14 @@ jobs:
         with:
           meteor-release: '3.1'
 
-      - name: cache dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-      - run: cd tests && meteor npm install && meteor npm run test
+      - name: Install mTest
+        run: |
+          npm i -g @zodern/mtest
+
+      - name: Run Tests
+        run: |
+          # Fix using old versions of Meteor
+          export NODE_TLS_REJECT_UNAUTHORIZED=0
+
+          mtest --package ./ --once 3.1
 
